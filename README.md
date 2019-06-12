@@ -81,7 +81,10 @@ e.g.
 cd ${C3AE_Age_Estimation_ROOT}
 vim config.py
 cfg.train.num_gpus = {your gpu nums}
-etc.		   
+etc.
+
+cd ${C3AE_Age_Estimation_ROOT}/examples/
+python3 multi_gpus_train.py
 ```
 
 ## TODO:
