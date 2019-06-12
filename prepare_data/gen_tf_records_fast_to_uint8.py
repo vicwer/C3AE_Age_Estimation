@@ -58,7 +58,7 @@ def run_encode(file_path, tf_records_filename):
         img = extract_image(imgs_path[i], height, width, is_resize=False)
         img = img.tostring()
         age_label = age_labels[i].flatten().tolist()
-		age_vector = age_vectors[i].flatten().tolist()
+        age_vector = age_vectors[i].flatten().tolist()
         example = tf.train.Example(features=tf.train.Features(feature={
                       'age_label' : tf.train.Feature(float_list = tf.train.FloatList(value=age_label)),
                       'age_vector' : tf.train.Feature(float_list = tf.train.FloatList(value=age_vector))

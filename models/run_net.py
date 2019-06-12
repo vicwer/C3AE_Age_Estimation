@@ -25,8 +25,8 @@ class C3AENet:
     def compute_loss(self):
         with tf.name_scope('loss_0'):
             loss_l1 = l1_loss(self.pred, self.age_labels)
-			loss_kl = kl_loss(self.feats, self.age_vector, self.l1_loss)
-            self.all_loss = loss_l1 + loss_kl
+            loss_kl = kl_loss(self.feats, self.age_vector, self.l1_loss)
+            self.all_loss = loss_l1 + cfg.train.ratio * loss_kl
         return self.all_loss
 
     def predict(self):

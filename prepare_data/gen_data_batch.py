@@ -15,7 +15,7 @@ def parser(example):
                                                        'age_vector': tf.FixedLenFeature([12], tf.float32)
                                                        'feature': tf.FixedLenFeature([], tf.string)})
     age_label = feats['age_label']
-	age_vector = feats['age_vector']
+    age_vector = feats['age_vector']
 
     img = tf.decode_raw(feats['feature'], tf.uint8)
     img = tf.reshape(img, [220, 220, 3])
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     imgs = tf.reshape(imgs, (-1, imgs.get_shape()[2], imgs.get_shape()[3], imgs.get_shape()[4]))
     imgs_split = tf.split(imgs, cfg.train.num_gpus)
     age_label_split = tf.split(age_label, cfg.train.num_gpus)
-	age_vector_split = tf.split(age_vector, cfg.num_gpus)
+    age_vector_split = tf.split(age_vector, cfg.num_gpus)
 
     configer = tf.ConfigProto()
     configer.gpu_options.per_process_gpu_memory_fraction = 0.3

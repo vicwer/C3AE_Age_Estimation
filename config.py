@@ -8,14 +8,14 @@ cfg = edict()
 cfg.batch_size = 60
 # cfg.batch_size = 256
 
-cfg.data_path = './tf_records/train.records'
-cfg.ckpt_path = './ckpt/'
+cfg.data_path = '../tf_records/train.records'
+cfg.ckpt_path = '../ckpt/'
 
 # training options
 cfg.train = edict()
 
 cfg.train.ignore_thresh = .5
-cfg.train.ohem_ratio = 0.8
+cfg.train.ratio = 0.8
 cfg.train.momentum = 0.9
 cfg.train.bn_training = True
 cfg.train.weight_decay = 0.00001 # 0.00004
