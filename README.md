@@ -69,8 +69,6 @@ data/
 
 ```
 cd prepare_data
-
-```
 python3 gen_tf_records_fast_to_uint8.py
 ```
 
