@@ -22,6 +22,9 @@ from tensorflow.python.ops import variable_scope
 
 PRINT_LAYER_LOG = cfg.PRINT_LAYER_LOG
 
+def h_swish(inputs):
+    return inputs * tf.nn.relu6(inputs + 3) / 6.
+
 def network_arg_scope(
         is_training=True, weight_decay=cfg.train.weight_decay, batch_norm_decay=0.997,
         batch_norm_epsilon=1e-5, batch_norm_scale=False):
@@ -38,8 +41,8 @@ def network_arg_scope(
             weights_regularizer=slim.l2_regularizer(weight_decay),
             weights_initializer=slim.variance_scaling_initializer(),
             trainable=is_training,
-            activation_fn=tf.nn.relu6,
-            #activation_fn=tf.nn.relu,
+            activation_fn=h_swish,
+            #activation_fn=tf.nn.relu6,
             normalizer_fn=slim.batch_norm,
             normalizer_params=batch_norm_params,
             padding='valid'):
@@ -54,13 +57,13 @@ class Network(object):
         is_training = mode
         with slim.arg_scope(network_arg_scope(is_training=is_training)):
             with tf.variable_scope(scope, reuse=False):
-                conv1 = conv2d(inputs, 32, 1, name='conv_1')
+                conv1 = se_module(inputs, 32, 1, name='conv_1')
                 avg1 = avg_pool(conv1, name='avg_1')
-                conv2 = conv2d(avg1, 32, 1, name='conv_2')
+                conv2 = se_module(avg1, 32, 1, name='conv_2')
                 avg2 = avg_pool(conv2, name='avg_2')
-                conv3 = conv2d(avg2, 32, 1, name='conv_3')
+                conv3 = se_module(avg2, 32, 1, name='conv_3')
                 avg3 = avg_pool(conv3, name='avg_3')
-                conv4 = conv2d(avg3, 32, 1, name='conv_4')
+                conv4 = se_module(avg3, 32, 1, name='conv_4')
                 conv5 = slim.conv2d(conv4, 32, [1,1], 1, scope='conv_5')
                 print(conv5.name, conv5.get_shape())
                 avg5 = tf.reduce_mean(conv5, [1, 2], keepdims=True, name='avg_pool')
@@ -74,6 +77,16 @@ class Network(object):
                     return feats, pred, feats_l1_loss
                 else:
                     return feats, pred
+
+def se_module(inputs, c_outputs, s, name):
+    output = conv2d(inputs, c_outputs, s, name)
+    if cfg.use_se_module:
+        global_pooling = tf.reduce_mean(output, [1, 2], keepdims=True, name=name+'_avg_pool')
+        fc1 = pw_conv(global_pooling, int(output.get_shape()[-1] / 2), name+'_fc1')
+        fc2 = pw_conv(fc1, c_outputs, name+'_fc2')
+        sigmoid = tf.sigmoid(fc2)
+        output = output * sigmoid
+    return output
 
 def reshape(inputs, shape, name):
     output = tf.reshape(inputs, shape=shape, name=name)
@@ -149,12 +162,12 @@ def dw_conv(inputs, s, name):
         print(name, output.get_shape())
     return output
 
-def pw_conv(inputs, c_outputs, s, name):
+def pw_conv(inputs, c_outputs, name):
     output = slim.conv2d(inputs,
                          num_outputs=c_outputs,
                          kernel_size=[1,1],
-                         stride=s,
-                         scope=name)
+                         stride=1,
+                         scope=name+'_p_conv')
     if PRINT_LAYER_LOG:
         print(name, output.get_shape())
     return output

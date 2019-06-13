@@ -6,7 +6,6 @@ import os
 cfg = edict()
 
 cfg.batch_size = 60
-# cfg.batch_size = 256
 
 cfg.data_path = '../tf_records/train.records'
 cfg.ckpt_path = '../ckpt/'
