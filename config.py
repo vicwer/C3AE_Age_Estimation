@@ -31,3 +31,4 @@ cfg.train.learn_rate_decay_epoch = 2
 cfg.train.num_samples = 150000
 cfg.epochs = 160
 cfg.PRINT_LAYER_LOG = True
+cfg.ohem_ratio = 1.0
