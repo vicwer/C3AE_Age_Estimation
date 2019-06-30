@@ -20,7 +20,7 @@ class C3AENet:
         if is_training:
             self.feats, self.pred, self.l1_loss = backbone.inference(self.is_training, self.img)
         else:
-            self.head, self.conv = backbone.inference(self.is_training, self.img)
+            self.feats, self.pred = backbone.inference(self.is_training, self.img)
 
     def compute_loss(self):
         with tf.name_scope('loss_0'):
@@ -33,7 +33,4 @@ class C3AENet:
         '''
         only support single image prediction, TODO...
         '''
-        pred_score = tf.reshape(self.head, (-1, cfg.classes))
-        score = tf.nn.softmax(tf.reshape(self.head, (-1, cfg.classes)))
-        class_index = tf.argmax(pred_score, 1)
-        return class_index, score, self.conv
+        return self.pred
