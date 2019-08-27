@@ -22,7 +22,7 @@ def load_file(file_path):
         for line in lines:
             img_path = line.strip().split(' ')[0]
             age_label = float(line.strip().split(' ')[1])
-            age_vector = float(line.strip().split(' ')[2:])
+            age_vector = [float(i) for i in line.strip().split(' ')[2:]]
             imgs_path.append(img_path)
             age_labels.append(age_label)
             age_vectors.append(age_vector)
