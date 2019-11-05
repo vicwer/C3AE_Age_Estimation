@@ -12,7 +12,7 @@ import cv2
 
 def parser(example):
     feats = tf.parse_single_example(example, features={'age_label': tf.FixedLenFeature([1], tf.float32),
-                                                       'age_vector': tf.FixedLenFeature([12], tf.float32)，
+                                                       'age_vector': tf.FixedLenFeature([12], tf.float32),
                                                        'feature': tf.FixedLenFeature([], tf.string)})
     age_label = feats['age_label']
     age_vector = feats['age_vector']
