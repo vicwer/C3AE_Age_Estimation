@@ -68,7 +68,8 @@ class Network(object):
                 print(conv5.name, conv5.get_shape())
                 # avg5 = tf.reduce_mean(conv5, [1, 2], keepdims=True, name='avg_pool')
                 # print(avg5.name, avg5.get_shape())
-                concat = reshape(conv5, [-1, avg5.get_shape()[3] * 3], 'reshape')
+                # concat = slim.flatten(conv5, scope="reshape")
+                concat = reshape(conv5, [-1, conv5.get_shape()[1] * conv5.get_shape()[2] * conv5.get_shape()[3] * 3], 'reshape')
                 feats = fully_connected(concat, 12, name='fc_1')
                 pred = fully_connected(feats, 1, name='fc_2')
                 if is_training:
